@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -18,8 +19,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::match(['get', 'post'], '/botman', [UserController::class, 'handle']);
-Route::get('/botman/tinker', [UserController::class, 'tinker']);
+
+
+
+Route::post('/chat', [ChatController::class, 'store']);
+
+
+
+
+
+// Route::post('/botman', [BotManController::class, 'handle']);
+
+// Route::get('/botman/tinker', [UserController::class, 'tinker']);
 // // Route::get('/botman/chat', function () {
 // //     return view('chat');
 // });

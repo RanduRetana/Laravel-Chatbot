@@ -10,17 +10,29 @@ document.addEventListener("DOMContentLoaded", function () {
             li.textContent = message;
             messages.appendChild(li);
             messageInput.value = "";
-            // Aquí puedes enviar el mensaje al chatbot y procesar la respuesta.
-            // Por ejemplo, puedes hacer una llamada AJAX a tu controlador de Laravel y procesar la respuesta.
-            // En este ejemplo, simplemente mostramos la respuesta del chatbot como otro mensaje en la lista.
-            const reply = "Respuesta del chatbot: " + message;
-            setTimeout(function () {
-                const botLi = document.createElement("li");
-                botLi.textContent = reply;
-                botLi.style.color = "#4CAF50";
-                messages.appendChild(botLi);
-                messages.scrollTop = messages.scrollHeight;
-            }, 1000);
+
+            // Enviar el mensaje al controlador de Laravel y procesar la respuesta
+            fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute("content"),
+                },
+                body: JSON.stringify({ user_message: message }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    const reply = data.bot_message;
+                    setTimeout(function () {
+                        const botLi = document.createElement("li");
+                        botLi.textContent = reply;
+                        botLi.style.color = "#4CAF50";
+                        messages.appendChild(botLi);
+                        messages.scrollTop = messages.scrollHeight;
+                    }, 1000);
+                });
         }
     });
     messageInput.addEventListener("keydown", function (event) {
